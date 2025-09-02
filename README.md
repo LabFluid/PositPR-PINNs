@@ -5,7 +5,7 @@ Requires the custom PositPR.jl library, currently available only locally.
 
 ## Differential Equations used in the experiments
 
-### eq1
+### eq1 (ode)
 
 **Differential equation**
 
@@ -27,7 +27,7 @@ $$
 
 ---
 
-### eq2
+### eq2 (pde)
 
 **Differential equation**
 
