@@ -1,2 +1,2 @@
 # PositPR-application-code
-Julia codes for applying Posit arithmetic in PINNs and numerical experiments.
+Julia codes for experiments with Posit arithmetic in Physics-Informed Neural Networks (PINNs). Requires the custom PositPR.jl library, currently available only locally.
