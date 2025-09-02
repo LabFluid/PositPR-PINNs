@@ -6,7 +6,13 @@ T = Posit{8,2}
 rng = MersenneTwister(1234)
 epochs = 200
 
-# Rede
+global N = 50 #grid points
+global ONE_T = one(T)
+global ZERO_T = zero(T)
+global TWO_PI = T(2) * pi_ramanujan(T)
+
+
+#NN definition
 chain = Chain(
     Dense(1, 5, tanh; init_weight=randnP8_2, init_bias=zerosP8_2),
     Dense(5, 5, tanh; init_weight=randnP8_2, init_bias=zerosP8_2),
@@ -16,11 +22,7 @@ chain = Chain(
 θ, st = Lux.setup(rng, chain)
 θ = ComponentArray(θ)
 
-global N = 50
-global ONE_T = one(T)
-global ZERO_T = zero(T)
-global TWO_PI = T(2.0) * pi_ramanujan(T)
-
+#forward pass and loss func
 function make_loss(T, chain, st)
     f(u, t) = cos(t * TWO_PI)
 
@@ -72,7 +74,7 @@ for epoch in 1:epochs
         epoch, Posit2x(current_loss), melhor_epoch, Posit2x(melhor_loss))
 end
 
-# Visualização
+#plots
 ts_plot = Float64.(range(0, 1; length=1000))
 u_pred = [Float64(Posit2x(trial([T(t)], melhor_θ))) for t in ts_plot]
 us_best = [Float64(Posit2x(trial([T(t)], melhor_θ))) for t in ts_plot]
@@ -81,10 +83,9 @@ plt = plot(ts_plot, u_pred, lw=2, label="Rede Posit{8,2} ótimo Epoch $melhor_ep
 function exact_eq1_float64_to_posit(T::Type{<:Posit})
     return t -> T(sin(2π * Float64(t)) / (2π))
 end
-u_conv = [Float64(Posit2x(exact_eq1_float64_to_posit(T)(T(t)))) for t in ts_plot]
 
+u_conv = [Float64(Posit2x(exact_eq1_float64_to_posit(T)(T(t)))) for t in ts_plot]
 plot!(plt, ts_plot, u_conv, label="Posit{8,2} convertido", c=:red, lw=1, ls=:dash)
 
-# Solução analítica
 u_exact = [sin(2π * t) / (2π) for t in ts_plot]
 plot!(plt, ts_plot, u_exact, lw=2, ls=:dash, label="Solução exata (Float64)", color=:black)
